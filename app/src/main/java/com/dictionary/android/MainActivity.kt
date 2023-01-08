@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dictionary.android.feature_dictionary.navigation.MainScreen
 import com.dictionary.android.feature_dictionary.presentation.WordInfoItem
 import com.dictionary.android.feature_dictionary.presentation.WordInfoViewModel
 import com.dictionary.android.ui.theme.DictionaryTheme
@@ -24,7 +25,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DictionaryTheme {
-                val viewModel: WordInfoViewModel = hiltViewModel()
+                MainScreen()
+                /*val viewModel: WordInfoViewModel = hiltViewModel()
                 val state = viewModel.state.value
                 val scaffoldState = rememberScaffoldState()
 
@@ -79,7 +81,7 @@ class MainActivity : ComponentActivity() {
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                         }
                     }
-                }
+                }*/
             }
         }
     }
