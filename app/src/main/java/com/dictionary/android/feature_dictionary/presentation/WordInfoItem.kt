@@ -14,12 +14,15 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-
+import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dictionary.android.feature_dictionary.domain.model.WordInfo
+import java.util.*
 
 @Composable
 fun WordInfoItem(
@@ -30,7 +33,7 @@ fun WordInfoItem(
     val context = LocalContext.current
     Column(modifier = modifier) {
         Text(
-            text = wordInfo.word,
+            text = wordInfo.word.uppercase(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
@@ -52,11 +55,16 @@ fun WordInfoItem(
 
             ) {
                 Text(
-                    text = meaning.partOfSpeech,
+                    text = meaning.partOfSpeech.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.getDefault()
+                        ) else it.toString()
+                    },
                     fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primaryVariant,
                     fontSize = 18.sp,
                     modifier = modifier.padding(bottom = 8.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Left,
                 )
             }
 
@@ -86,6 +94,7 @@ fun WordInfoItem(
                         meaning.definitions.forEachIndexed { i, definition ->
                             Text(
                                 text = "${i + 1}. ${definition.definition}",
+                                color = MaterialTheme.colors.primaryVariant,
                                 modifier = Modifier.pointerInput(Unit) {
                                     detectTapGestures(
                                         onDoubleTap = {
@@ -102,6 +111,7 @@ fun WordInfoItem(
                             definition.example?.let { example ->
                                 Text(
                                     text = "Example: $example",
+                                    color = MaterialTheme.colors.primaryVariant,
                                     modifier = Modifier.pointerInput(Unit) {
                                         detectTapGestures(
                                             onDoubleTap = {
