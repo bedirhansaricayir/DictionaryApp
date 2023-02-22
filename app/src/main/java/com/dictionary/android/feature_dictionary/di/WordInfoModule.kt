@@ -6,9 +6,12 @@ import com.google.gson.Gson
 import com.dictionary.android.feature_dictionary.data.local.Converters
 import com.dictionary.android.feature_dictionary.data.local.WordInfoDatabase
 import com.dictionary.android.feature_dictionary.data.remote.DictionaryApi
+import com.dictionary.android.feature_dictionary.data.repository.FavoriteRepositoryImpl
 import com.dictionary.android.feature_dictionary.data.repository.WordInfoRepositoryImpl
 import com.dictionary.android.feature_dictionary.data.util.GsonParser
+import com.dictionary.android.feature_dictionary.domain.repository.FavoriteRepository
 import com.dictionary.android.feature_dictionary.domain.repository.WordInfoRepository
+import com.dictionary.android.feature_dictionary.domain.use_case.BaseFavoriteRoomUseCase
 import com.dictionary.android.feature_dictionary.domain.use_case.GetWordInfo
 import dagger.Module
 import dagger.Provides
@@ -30,6 +33,12 @@ object WordInfoModule {
 
     @Provides
     @Singleton
+    fun provideBaseFavoriteRoomUseCase(repository: FavoriteRepository): BaseFavoriteRoomUseCase {
+        return BaseFavoriteRoomUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideWordInfoRepository(
         db: WordInfoDatabase,
         api: DictionaryApi
@@ -39,10 +48,17 @@ object WordInfoModule {
 
     @Provides
     @Singleton
+    fun provideFavoriteRepository(
+        db: WordInfoDatabase
+    ): FavoriteRepository {
+        return FavoriteRepositoryImpl(db.favoriteDao)
+    }
+    @Provides
+    @Singleton
     fun provideWordInfoDatabase(app: Application): WordInfoDatabase {
         return Room.databaseBuilder(
             app, WordInfoDatabase::class.java, "word_db"
-        ).addTypeConverter(Converters(GsonParser(Gson())))
+        ).addTypeConverter(Converters(GsonParser(Gson()))).fallbackToDestructiveMigration()
             .build()
     }
 

@@ -1,4 +1,4 @@
-package com.dictionary.android.feature_dictionary.navigation
+package com.dictionary.android.core.navigation
 
 import androidx.compose.runtime.Composable
 

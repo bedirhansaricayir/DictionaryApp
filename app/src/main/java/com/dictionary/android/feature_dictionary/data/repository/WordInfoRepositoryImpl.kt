@@ -1,6 +1,7 @@
 package com.dictionary.android.feature_dictionary.data.repository
 
 import com.dictionary.android.core.util.Resource
+import com.dictionary.android.feature_dictionary.data.local.FavoriteWordDao
 import com.dictionary.android.feature_dictionary.data.local.WordInfoDao
 import com.dictionary.android.feature_dictionary.data.remote.DictionaryApi
 import com.dictionary.android.feature_dictionary.domain.model.WordInfo
@@ -12,7 +13,7 @@ import java.io.IOException
 
 class WordInfoRepositoryImpl(
     private val api: DictionaryApi,
-    private val dao: WordInfoDao
+    private val dao: WordInfoDao,
 ): WordInfoRepository {
 
     override fun getWordInfo(word: String): Flow<Resource<List<WordInfo>>> = flow {

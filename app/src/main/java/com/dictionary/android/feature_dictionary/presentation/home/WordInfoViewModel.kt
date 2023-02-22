@@ -1,10 +1,12 @@
-package com.dictionary.android.feature_dictionary.presentation
+package com.dictionary.android.feature_dictionary.presentation.home
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dictionary.android.core.util.Resource
+import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
+import com.dictionary.android.feature_dictionary.domain.use_case.BaseFavoriteRoomUseCase
 import com.dictionary.android.feature_dictionary.domain.use_case.GetWordInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WordInfoViewModel @Inject constructor(
-    private val getWordInfo: GetWordInfo
+    private val getWordInfo: GetWordInfo,
+    private val roomUseCase: BaseFavoriteRoomUseCase
 ) : ViewModel() {
 
     private val _searchQuery = mutableStateOf("")
@@ -63,6 +66,12 @@ class WordInfoViewModel @Inject constructor(
                         }
                     }
                 }.launchIn(this)
+        }
+    }
+
+    fun insertFavorite(word:FavoriteEntity){
+        viewModelScope.launch {
+            roomUseCase.insert(word)
         }
     }
 

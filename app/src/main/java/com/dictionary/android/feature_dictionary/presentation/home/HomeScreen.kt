@@ -1,9 +1,8 @@
-package com.dictionary.android.feature_dictionary.navigation
+package com.dictionary.android.feature_dictionary.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -16,17 +15,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.dictionary.android.R
-import com.dictionary.android.feature_dictionary.presentation.WordInfoItem
-import com.dictionary.android.feature_dictionary.presentation.WordInfoViewModel
+import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -38,10 +34,6 @@ fun HomeScreen() {
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val interactionSource = MutableInteractionSource()
-
-
-
 
 
     LaunchedEffect(key1 = true) {
@@ -49,7 +41,8 @@ fun HomeScreen() {
             when (event) {
                 is WordInfoViewModel.UIEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
+                        message = event.message,
+                        actionLabel = "OKEY"
                     )
                 }
             }
@@ -85,20 +78,6 @@ fun HomeScreen() {
                             contentDescription = "Search Button"
                         )
                     },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { /*TODO*/ },
-                            interactionSource = interactionSource,
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(end = 8.dp),
-                                painter = painterResource(id = R.drawable.ic_baseline_mic_24),
-                                tint = MaterialTheme.colors.secondary,
-                                contentDescription = "Call Button"
-                            )
-                        }
-                    },
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Search,
                         autoCorrect = true
@@ -128,7 +107,11 @@ fun HomeScreen() {
                         if (i > 0) {
                             Spacer(modifier = Modifier.height(8.dp))
                         }
-                        WordInfoItem(wordInfo = wordInfo)
+                        WordInfoItem(wordInfo = wordInfo, onSwipe = {
+                            val favoriteEntity = FavoriteEntity(word = wordInfo.word)
+                            viewModel.insertFavorite(favoriteEntity)
+                            Log.d("ITEM",wordInfo.word)
+                        })
                         if (i < state.wordInfoItems.size - 1) {
                             Divider(thickness = 2.dp, color = MaterialTheme.colors.primaryVariant)
                         }

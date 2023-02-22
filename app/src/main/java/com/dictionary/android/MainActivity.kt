@@ -3,21 +3,9 @@ package com.dictionary.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.dictionary.android.feature_dictionary.navigation.MainScreen
-import com.dictionary.android.feature_dictionary.presentation.WordInfoItem
-import com.dictionary.android.feature_dictionary.presentation.WordInfoViewModel
+import com.dictionary.android.core.navigation.MainScreen
 import com.dictionary.android.ui.theme.DictionaryTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

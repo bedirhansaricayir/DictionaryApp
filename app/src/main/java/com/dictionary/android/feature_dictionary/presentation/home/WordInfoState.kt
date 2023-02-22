@@ -1,4 +1,4 @@
-package com.dictionary.android.feature_dictionary.presentation
+package com.dictionary.android.feature_dictionary.presentation.home
 
 import com.dictionary.android.feature_dictionary.domain.model.WordInfo
 

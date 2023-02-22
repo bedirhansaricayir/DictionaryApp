@@ -1,9 +1,10 @@
-package com.dictionary.android.feature_dictionary.navigation
+package com.dictionary.android.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dictionary.android.feature_dictionary.presentation.home.HomeScreen
 
 
 @Composable
