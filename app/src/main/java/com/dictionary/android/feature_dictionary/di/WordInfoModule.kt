@@ -1,10 +1,12 @@
 package com.dictionary.android.feature_dictionary.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.google.gson.Gson
 import com.dictionary.android.feature_dictionary.data.local.Converters
 import com.dictionary.android.feature_dictionary.data.local.WordInfoDatabase
+import com.dictionary.android.feature_dictionary.data.local.datastore.DataStoreRepository
 import com.dictionary.android.feature_dictionary.data.remote.DictionaryApi
 import com.dictionary.android.feature_dictionary.data.repository.FavoriteRepositoryImpl
 import com.dictionary.android.feature_dictionary.data.repository.WordInfoRepositoryImpl
@@ -16,6 +18,7 @@ import com.dictionary.android.feature_dictionary.domain.use_case.GetWordInfo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -71,4 +74,10 @@ object WordInfoModule {
             .build()
             .create(DictionaryApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(
+        @ApplicationContext context: Context
+    ) = DataStoreRepository(context = context)
 }

@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -31,7 +32,7 @@ import java.util.*
 fun WordInfoItem(
     wordInfo: WordInfo,
     modifier: Modifier = Modifier,
-    onSwipe: () -> Unit
+    onSwipe: () -> Unit,
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -54,7 +55,11 @@ fun WordInfoItem(
         swipeThreshold = 50.dp,
         backgroundUntilSwipeThreshold = Color.Transparent
     ) {
-        Column() {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
+        ) {
             Card(
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 elevation = 5.dp,

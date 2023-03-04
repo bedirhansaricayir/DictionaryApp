@@ -1,7 +1,5 @@
-package com.dictionary.android.core.navigation
+package com.dictionary.android.navigation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.ripple.LocalRippleTheme
@@ -16,12 +14,11 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.dictionary.android.navigation.graph.BottomNavGraph
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController : NavHostController, startDestination: String) {
 
-    val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {
@@ -30,7 +27,7 @@ fun MainScreen() {
                 PaddingValues(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
             )
         ) {
-            BottomNavGraph(navController = navController)
+            BottomNavGraph(navController = navController, startDestination = startDestination)
 
         }
     }
@@ -46,19 +43,24 @@ fun BottomNavigationBar(navController: NavHostController, modifier: Modifier = M
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    val onBoardingScreen = Screen.OnBoardingScreen
+    val onBoardingDestination = onBoardingScreen.route == currentDestination?.route
+
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
 
-        BottomNavigation(
-            modifier = modifier,
-            backgroundColor = MaterialTheme.colors.primary,
-            elevation = 5.dp
-        ) {
-            screens.forEach {
-                AddItem(
-                    screen = it,
-                    currentDestination = currentDestination,
-                    navController = navController
-                )
+        if(!onBoardingDestination){
+            BottomNavigation(
+                modifier = modifier,
+                backgroundColor = MaterialTheme.colors.primary,
+                elevation = 5.dp
+            ) {
+                screens.forEach {
+                    AddItem(
+                        screen = it,
+                        currentDestination = currentDestination,
+                        navController = navController
+                    )
+                }
             }
         }
     }
@@ -72,7 +74,7 @@ private object NoRippleTheme : RippleTheme {
     override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0f, 0.0f, 0.0f, 0.0f)
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+
 @Composable
 fun RowScope.AddItem(
     screen: Screen,

@@ -1,4 +1,4 @@
-package com.dictionary.android.core.util
+package com.dictionary.android.core.view
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Dictionary</string>
+    <string name="EmptyFavorite">Nothing appears in favorites yet</string>
+    <string name="FirstOnBoardingPageTitle">Dictionary</string>
+    <string name="FirstOnBoardingPageDescription">Search for any word you want and learn all its meanings</string>
+    <string name="SecondOnBoardingPageTitle">Favorite</string>
+    <string name="SecondOnBoardingPageDescription">Add the word you want to your favorites and get reminder notifications</string>
+    <string name="ThirdOnBoardingPageTitle">Notifications</string>
+    <string name="ThirdOnBoardingPageDescription">Receive daily new words as a notification on your phone</string>
 </resources>
