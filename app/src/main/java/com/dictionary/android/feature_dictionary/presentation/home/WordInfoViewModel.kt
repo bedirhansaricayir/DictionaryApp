@@ -71,7 +71,7 @@ class WordInfoViewModel @Inject constructor(
 
     fun insertFavorite(word:FavoriteEntity){
         viewModelScope.launch {
-            roomUseCase.insert(word)
+            if(roomUseCase.isAvailableInDb(word.word)) _eventFlow.emit(UIEvent.ShowSnackbar("Word already favorited")) else roomUseCase.insert(word)
         }
     }
 

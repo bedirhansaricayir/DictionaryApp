@@ -1,11 +1,8 @@
 package com.dictionary.android.feature_dictionary.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
-import com.dictionary.android.feature_dictionary.data.local.entity.WordInfoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteWordDao {
@@ -17,5 +14,8 @@ interface FavoriteWordDao {
     suspend fun deleteWordToFavorite(word: String)
 
     @Query("SELECT * FROM FavoriteEntity")
-    suspend fun getWordsFromFavorite(): List<FavoriteEntity>
+    fun getWordsFromFavorite(): Flow<List<FavoriteEntity>>
+
+    @Query("SELECT EXISTS (SELECT * FROM FavoriteEntity WHERE word=:word)")
+    suspend fun isAvailableInDb(word: String): Boolean
 }

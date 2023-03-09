@@ -2,26 +2,41 @@ package com.dictionary.android.feature_dictionary.presentation.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
 import com.dictionary.android.feature_dictionary.domain.use_case.BaseFavoriteRoomUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
     private val roomUseCase: BaseFavoriteRoomUseCase
-): ViewModel() {
+) : ViewModel() {
 
-    var list: List<FavoriteEntity> = emptyList()
+    private val _state = MutableStateFlow(FavoriteState(isLoading = false))
+    val state: StateFlow<FavoriteState> = _state.asStateFlow()
+
+    private var job: Job? = null
 
     init {
-        viewModelScope.launch {
-            list = getAllFromFavorite()
+        getAllFromFavorite()
+    }
+
+    fun getAllFromFavorite() {
+        job?.cancel()
+        job = viewModelScope.launch {
+            roomUseCase.getAll().onEach { data ->
+                _state.update {
+                    it.copy(favoriteItems = data, isLoading = false)
+                }
+            }.collect()
         }
     }
 
-    suspend fun getAllFromFavorite(): List<FavoriteEntity> {
-        return roomUseCase.getAll()
+    fun removeFromFavorite(word: String) {
+        viewModelScope.launch {
+            roomUseCase.delete(word)
+        }
     }
 }

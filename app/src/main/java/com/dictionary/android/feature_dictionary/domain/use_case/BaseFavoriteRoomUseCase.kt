@@ -2,6 +2,7 @@ package com.dictionary.android.feature_dictionary.domain.use_case
 
 import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
 import com.dictionary.android.feature_dictionary.domain.repository.FavoriteRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BaseFavoriteRoomUseCase @Inject constructor(
@@ -15,7 +16,11 @@ class BaseFavoriteRoomUseCase @Inject constructor(
         return repository.deleteFavorite(word)
     }
 
-    suspend fun getAll(): List<FavoriteEntity> {
+     fun getAll(): Flow<List<FavoriteEntity>> {
         return repository.getWordsFromFavorite()
+    }
+
+    suspend fun isAvailableInDb(word: String): Boolean {
+        return repository.isAvailableInDb(word)
     }
 }

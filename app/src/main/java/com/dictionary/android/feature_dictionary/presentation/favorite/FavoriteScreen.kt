@@ -1,25 +1,22 @@
 package com.dictionary.android.feature_dictionary.presentation.favorite
 
-import android.graphics.fonts.FontFamily
-import android.graphics.fonts.FontStyle
 import android.os.Build.VERSION.SDK_INT
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -28,7 +25,6 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.airbnb.lottie.compose.*
 import com.dictionary.android.R
-import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
 
 @Composable
 fun FavoriteScreen() {
@@ -39,12 +35,10 @@ fun FavoriteScreen() {
 fun FavoriteScreenUI(
     viewModel: FavoriteViewModel = hiltViewModel()
 ) {
-    val list: List<FavoriteEntity> = viewModel.list
-    list.forEach {
-        Log.d("LİST",it.word)
+    val state = viewModel.state.collectAsState()
+    val favoriteData = state.value.favoriteItems
 
-    }
-    if (list.isEmpty()) {
+    if (favoriteData.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -64,15 +58,16 @@ fun FavoriteScreenUI(
             }
 
         }
-    }
-    if (list.isNotEmpty()) {
+    } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-            items(list){
-                Text(text = "Word: ${it.id} - ${it.word}")
+        ) {
+            items(favoriteData){
+                Text(text = "Word: ${it.id} - ${it.word}", modifier = Modifier.clickable {
+                    viewModel.removeFromFavorite(it.word)
+                })
             }
         }
     }
