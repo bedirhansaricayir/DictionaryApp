@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Dictionary</string>
-    <string name="EmptyFavorite">Nothing appears in favorites yet</string>
+    <string name="EmptyFavorite">No items favorite yet</string>
     <string name="FirstOnBoardingPageTitle">Dictionary</string>
     <string name="FirstOnBoardingPageDescription">Search for any word you want and learn all its meanings</string>
     <string name="SecondOnBoardingPageTitle">Favorite</string>

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
@@ -60,19 +61,24 @@ fun FavoriteScreenUI(
         }
     } else {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(favoriteData){
-                Text(text = "Word: ${it.id} - ${it.word}", modifier = Modifier.clickable {
-                    viewModel.removeFromFavorite(it.word)
-                })
+                FavoriteItem(
+                    favoriteWord = it,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onDeleteClick = {
+                        viewModel.removeFromFavorite(it.word)
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
-
-
 }
 
 @Composable
