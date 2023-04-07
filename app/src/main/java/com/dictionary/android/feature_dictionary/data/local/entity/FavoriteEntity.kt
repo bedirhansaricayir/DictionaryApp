@@ -6,5 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class FavoriteEntity(
     @PrimaryKey val id: Int? = null,
-    val word: String
+    val word: String,
+    val comment: String,
+    val date: String
 )

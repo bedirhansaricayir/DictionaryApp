@@ -1,9 +1,7 @@
 package com.dictionary.android.feature_dictionary.presentation.home
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.annotation.ColorRes
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,11 +59,14 @@ fun WordInfoItem(
             verticalArrangement = Arrangement.Center
         ) {
             Card(
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 elevation = 5.dp,
                 shape = RoundedCornerShape(12.dp),
                 backgroundColor = MaterialTheme.colors.primary
             ) {
+
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = wordInfo.word.uppercase(),

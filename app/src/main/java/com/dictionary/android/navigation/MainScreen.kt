@@ -17,7 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.dictionary.android.navigation.graph.BottomNavGraph
 
 @Composable
-fun MainScreen(navController : NavHostController, startDestination: String) {
+fun MainScreen(navController: NavHostController, startDestination: String) {
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
@@ -48,7 +48,7 @@ fun BottomNavigationBar(navController: NavHostController, modifier: Modifier = M
 
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
 
-        if(!onBoardingDestination){
+        if (!onBoardingDestination) {
             BottomNavigation(
                 modifier = modifier,
                 backgroundColor = MaterialTheme.colors.primary,
@@ -82,7 +82,7 @@ fun RowScope.AddItem(
     navController: NavHostController
 ) {
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-
+    val currentPage = currentDestination?.route
     BottomNavigationItem(
         label = {
             Text(text = screen.title, color = MaterialTheme.colors.primaryVariant)
@@ -95,14 +95,14 @@ fun RowScope.AddItem(
         },
         selected = selected,
         onClick = {
-            navController.navigate(screen.route) {
-                popUpTo(navController.graph.findStartDestination().id)
-                launchSingleTop = true
+            if (currentPage != screen.route) {
+                navController.navigate(screen.route) {
+                    popUpTo(navController.graph.findStartDestination().id)
+                    launchSingleTop = true
+                }
             }
-
-
         },
         alwaysShowLabel = false,
-        )
+    )
 
 }

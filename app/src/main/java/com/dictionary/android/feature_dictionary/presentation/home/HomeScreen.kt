@@ -1,15 +1,16 @@
 package com.dictionary.android.feature_dictionary.presentation.home
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -23,10 +24,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen() {
@@ -36,6 +42,8 @@ fun HomeScreen() {
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val currentDate = LocalDate.now()
+
 
 
     LaunchedEffect(key1 = true) {
@@ -50,79 +58,81 @@ fun HomeScreen() {
             }
         }
     }
-    Scaffold(
-        scaffoldState = scaffoldState
+
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
     ) {
-        Box(
+        Column(
             modifier = Modifier
-                .background(MaterialTheme.colors.background)
-                .padding(it)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Column(
+            OutlinedTextField(
+                value = viewModel.searchQuery.value,
+                onValueChange = viewModel::onSearch,
+                shape = CircleShape,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(text = "Search")
+                },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        tint = MaterialTheme.colors.secondary,
+                        contentDescription = "Search Button"
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Search,
+                    autoCorrect = true
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = MaterialTheme.colors.secondary,
+                    focusedIndicatorColor = MaterialTheme.colors.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colors.primary,
+                    cursorColor = MaterialTheme.colors.primary,
+                ),
+                maxLines = 45
+
+
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
             ) {
-                OutlinedTextField(
-                    value = viewModel.searchQuery.value,
-                    onValueChange = viewModel::onSearch,
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    placeholder = {
-                        Text(text = "Search")
-                    },
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            tint = MaterialTheme.colors.secondary,
-                            contentDescription = "Search Button"
+                items(state.wordInfoItems.size) { i ->
+                    val wordInfo = state.wordInfoItems[i]
+                    if (i > 0) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    WordInfoItem(wordInfo = wordInfo) {
+                        val favoriteEntity = FavoriteEntity(
+                            word = wordInfo.word,
+                            comment = "Kullanıcı Yorumu",
+                            date = currentDate.toString()
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search,
-                        autoCorrect = true
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            keyboardController?.hide()
-                            focusManager.clearFocus()
-                        }
-                    ),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = MaterialTheme.colors.secondary,
-                        focusedIndicatorColor = MaterialTheme.colors.primary,
-                        unfocusedIndicatorColor = MaterialTheme.colors.primary,
-                        cursorColor = MaterialTheme.colors.primary,
-                    ),
-                    maxLines = 45
+                        viewModel.insertFavorite(favoriteEntity)
+                        Log.d("ITEM", wordInfo.word)
+                    }
 
-
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(state.wordInfoItems.size) { i ->
-                        val wordInfo = state.wordInfoItems[i]
-                        if (i > 0) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-                        WordInfoItem(wordInfo = wordInfo, onSwipe = {
-                            val favoriteEntity = FavoriteEntity(word = wordInfo.word)
-                            viewModel.insertFavorite(favoriteEntity)
-                            Log.d("ITEM",wordInfo.word)
-                        })
-                        if (i < state.wordInfoItems.size - 1) {
-                            Divider(thickness = 2.dp, color = MaterialTheme.colors.primaryVariant)
-                        }
+                    if (i < state.wordInfoItems.size - 1) {
+                        Divider(thickness = 2.dp, color = MaterialTheme.colors.primaryVariant)
                     }
                 }
             }
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
+        }
+        if (state.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

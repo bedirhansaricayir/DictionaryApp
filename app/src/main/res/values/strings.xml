@@ -7,4 +7,6 @@
     <string name="SecondOnBoardingPageDescription">Add the word you want to your favorites and get reminder notifications</string>
     <string name="ThirdOnBoardingPageTitle">Notifications</string>
     <string name="ThirdOnBoardingPageDescription">Receive daily new words as a notification on your phone</string>
+    <string name="yourComment">Your Comment</string>
+    <string name="FirstYourComment">Add your own comment, keep it in your memory</string>
 </resources>
