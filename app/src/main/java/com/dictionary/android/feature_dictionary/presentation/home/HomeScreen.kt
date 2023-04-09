@@ -134,6 +134,18 @@ fun HomeScreen() {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
+        /*Box(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp, end = 16.dp),Alignment.BottomEnd){
+            FloatingActionButton(onClick = {
+                val favoriteEntity = FavoriteEntity(
+                    word = "deneme",
+                    comment = "Kullanıcı Yorumu",
+                    date = currentDate.toString()
+                )
+                viewModel.insertFavorite(favoriteEntity)
+            }) {
+//Eklenebilir.
+            }
+        }*/
     }
 }
 
