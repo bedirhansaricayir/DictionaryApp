@@ -61,18 +61,19 @@ fun WordInfoItem(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .wrapContentHeight(),
                 elevation = 5.dp,
                 shape = RoundedCornerShape(12.dp),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colors.background
             ) {
 
                 Text(
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
                     text = wordInfo.word.uppercase(),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Normal,
-                    color = Color.White,
+                    color = MaterialTheme.colors.primary,
+                    textAlign = TextAlign.Start
                 )
             }
 
@@ -104,7 +105,7 @@ fun WordInfoItem(
                         },
                     shape = RoundedCornerShape(12.dp),
                     elevation = 5.dp,
-                    backgroundColor = MaterialTheme.colors.primary
+                    backgroundColor = MaterialTheme.colors.background
 
                 ) {
 
@@ -121,8 +122,8 @@ fun WordInfoItem(
                                         Locale.getDefault()
                                     ) else it.toString()
                                 },
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colors.primaryVariant,
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colors.primary,
                                 fontSize = 18.sp,
                                 modifier = modifier.padding(bottom = 8.dp),
                                 textAlign = TextAlign.Left,
@@ -130,7 +131,7 @@ fun WordInfoItem(
                             meaning.definitions.forEachIndexed { i, definition ->
                                 Text(
                                     text = "${i + 1}. ${definition.definition}",
-                                    color = MaterialTheme.colors.primaryVariant,
+                                    color = MaterialTheme.colors.onBackground,
                                     modifier = Modifier.pointerInput(Unit) {
                                         detectTapGestures(
                                             onDoubleTap = {
@@ -147,7 +148,8 @@ fun WordInfoItem(
                                 definition.example?.let { example ->
                                     Text(
                                         text = "Example: $example",
-                                        color = MaterialTheme.colors.primaryVariant,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colors.onBackground,
                                         modifier = Modifier.pointerInput(Unit) {
                                             detectTapGestures(
                                                 onDoubleTap = {

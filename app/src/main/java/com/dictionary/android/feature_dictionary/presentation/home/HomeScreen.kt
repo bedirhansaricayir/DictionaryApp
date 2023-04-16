@@ -23,10 +23,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dictionary.android.core.view.AnimationLoading
 import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*
 
@@ -62,6 +61,7 @@ fun HomeScreen() {
     Box(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
+            .fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -118,7 +118,7 @@ fun HomeScreen() {
                     WordInfoItem(wordInfo = wordInfo) {
                         val favoriteEntity = FavoriteEntity(
                             word = wordInfo.word,
-                            comment = "Kullanıcı Yorumu",
+                            comment = wordInfo.word,
                             date = currentDate.toString()
                         )
                         viewModel.insertFavorite(favoriteEntity)
@@ -126,13 +126,16 @@ fun HomeScreen() {
                     }
 
                     if (i < state.wordInfoItems.size - 1) {
-                        Divider(thickness = 2.dp, color = MaterialTheme.colors.primaryVariant)
+                        Divider(thickness = 0.5.dp, color = MaterialTheme.colors.onBackground, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
                     }
                 }
             }
         }
         if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), strokeWidth = 1.dp)
+            Box(modifier = Modifier.align(Alignment.Center)){
+                AnimationLoading()
+            }
         }
         /*Box(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp, end = 16.dp),Alignment.BottomEnd){
             FloatingActionButton(onClick = {

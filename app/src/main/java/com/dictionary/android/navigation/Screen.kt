@@ -56,17 +56,17 @@ sealed class Screen(
          fun getData(): List<OnBoardingPage>{
              return listOf(
                  OnBoardingPage(
-                     image = R.drawable.ic_baseline_mic_24,
+                     image = R.drawable.ic_launcher_foreground,
                      title = R.string.FirstOnBoardingPageTitle,
                      description = R.string.FirstOnBoardingPageDescription
                  ),
                  OnBoardingPage(
-                     image = R.drawable.ic_baseline_mic_24,
+                     image = R.drawable.ic_launcher_foreground,
                      title = R.string.SecondOnBoardingPageTitle,
                      description = R.string.SecondOnBoardingPageDescription
                  ),
                  OnBoardingPage(
-                     image = R.drawable.ic_baseline_mic_24,
+                     image = R.drawable.ic_launcher_foreground,
                      title = R.string.ThirdOnBoardingPageTitle,
                      description = R.string.ThirdOnBoardingPageDescription
                  )

@@ -1,5 +1,6 @@
 package com.dictionary.android.feature_dictionary.presentation.onboarding
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -9,9 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -28,74 +26,68 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.dictionary.android.navigation.OnBoardingPage
 import com.dictionary.android.navigation.Screen
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnBoarding(navController: NavHostController,onBoardingViewModel: OnBoardingViewModel = hiltViewModel()) {
+fun OnBoarding(
+    navController: NavHostController,
+    onBoardingViewModel: OnBoardingViewModel = hiltViewModel()
+) {
     val items = OnBoardingPage.getData()
     val scope = rememberCoroutineScope()
     val pageState = rememberPagerState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         TopSection(
-            onBackClick = {
-                if (pageState.currentPage + 1 > 1) scope.launch {
-                    pageState.scrollToPage(pageState.currentPage - 1)
-                }
-            },
             onSkipClick = {
                 if (pageState.currentPage + 1 < items.size) scope.launch {
                     pageState.scrollToPage(items.size - 1)
                 }
-            }
+            },
         )
-
         HorizontalPager(
             count = items.size,
             state = pageState,
-            modifier = Modifier
-                .fillMaxHeight(0.9f)
-                .fillMaxWidth()
+            verticalAlignment = Alignment.Top,
+            modifier = Modifier.weight(10f)
         ) { page ->
             OnBoardingItem(items = items[page])
         }
-        BottomSection(size = items.size, index = pageState.currentPage) {
-            if (pageState.currentPage + 1 < items.size) scope.launch {
-                pageState.scrollToPage(pageState.currentPage + 1)
-            }
-            if(pageState.currentPage +1 == items.size) {
-                onBoardingViewModel.saveOnBoardingState(completed = true)
-                navController.navigate(Screen.HomeScreen.route){
-                    popUpTo(Screen.OnBoardingScreen.route){
-                        inclusive = true
-                    }
+        HorizontalPagerIndicator(
+            pagerState = pageState,
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterHorizontally),
+            activeColor = MaterialTheme.colors.primary,
+            inactiveColor = Color(0XFFF8E2E7)
+        )
+        BottomSection(modifier = Modifier.weight(1f), pagerState = pageState, onButtonClick = {
+            onBoardingViewModel.saveOnBoardingState(completed = true)
+            navController.navigate(Screen.HomeScreen.route) {
+                popUpTo(Screen.OnBoardingScreen.route) {
+                    inclusive = true
                 }
             }
-        }
+        })
     }
 }
 
 @ExperimentalPagerApi
 @Composable
-fun TopSection(onBackClick: () -> Unit = {}, onSkipClick: () -> Unit = {}) {
+fun TopSection(onSkipClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        // Back button
-        IconButton(onClick = onBackClick, modifier = Modifier.align(Alignment.CenterStart)) {
-            Icon(imageVector = Icons.Outlined.KeyboardArrowLeft, contentDescription = null)
-        }
-
-        // Skip Button
         TextButton(
             onClick = onSkipClick,
-            modifier = Modifier.align(Alignment.CenterEnd),
+            modifier = Modifier.align(Alignment.TopEnd),
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(text = "Skip", color = MaterialTheme.colors.onBackground)
@@ -104,46 +96,43 @@ fun TopSection(onBackClick: () -> Unit = {}, onSkipClick: () -> Unit = {}) {
 }
 
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun BottomSection(size: Int, index: Int, onButtonClick: () -> Unit = {}) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp)
+fun BottomSection(modifier: Modifier, pagerState: PagerState, onButtonClick: () -> Unit = {}) {
+    Row(
+        modifier = modifier.padding(horizontal = 40.dp),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.Center
     ) {
-        // Indicators
-        Indicators(size, index)
-
-        // FAB Next
-        /* FloatingActionButton(
-             onClick = onButtonClick,
-            // backgroundColor = MaterialTheme.colorScheme.primary,
-            // contentColor = MaterialTheme.colorScheme.onPrimary,
-             modifier = Modifier.align(Alignment.CenterEnd)
-         ) {
-             Icon(imageVector = Icons.Outlined.KeyboardArrowRight, contentDescription = "Next")
-         }*/
-
-        FloatingActionButton(
-            onClick = { onButtonClick() },
-            backgroundColor = Color.Black,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+        AnimatedVisibility(
+            modifier = modifier.fillMaxWidth(),
+            visible = pagerState.currentPage == 2
         ) {
-            Icon(Icons.Outlined.KeyboardArrowRight,
-                tint = Color.White,
-                contentDescription = "Localized description")
+            OutlinedButton(
+                modifier = modifier
+                    .fillMaxWidth(0.7f)
+                    .align(Alignment.Bottom),
+                onClick = { onButtonClick() },
+                shape = RoundedCornerShape(50.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.primary
+                ),
+            ) {
+                Text(
+                    text = "Get Started",
+                    textAlign = TextAlign.Center,
+                    modifier = modifier.padding(vertical = 8.dp, horizontal = 40.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun BoxScope.Indicators(size: Int, index: Int) {
+fun Indicators(size: Int, index: Int) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.align(Alignment.CenterStart)
     ) {
         repeat(size) {
             Indicator(isSelected = it == index)
@@ -154,7 +143,7 @@ fun BoxScope.Indicators(size: Int, index: Int) {
 @Composable
 fun Indicator(isSelected: Boolean) {
     val width = animateDpAsState(
-        targetValue = if (isSelected) 25.dp else 10.dp,
+        targetValue = if (isSelected) 20.dp else 10.dp,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
     )
 
@@ -174,19 +163,18 @@ fun Indicator(isSelected: Boolean) {
 @Composable
 fun OnBoardingItem(items: OnBoardingPage) {
     Column(
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        verticalArrangement = Arrangement.Top
     ) {
         Image(
+            modifier = Modifier.padding(start = 40.dp, end = 40.dp),
             painter = painterResource(id = items.image),
-            contentDescription = "Image1",
-            modifier = Modifier.padding(start = 50.dp, end = 50.dp)
+            contentDescription = "Pager Image",
         )
-
-        Spacer(modifier = Modifier.height(25.dp))
-
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = items.title),
             style = MaterialTheme.typography.h3,
             // fontSize = 24.sp,
@@ -195,7 +183,6 @@ fun OnBoardingItem(items: OnBoardingPage) {
             textAlign = TextAlign.Center,
             letterSpacing = 1.sp,
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(id = items.description),
