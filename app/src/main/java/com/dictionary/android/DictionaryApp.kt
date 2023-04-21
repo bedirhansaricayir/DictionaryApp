@@ -5,9 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import com.dictionary.android.feature_dictionary.notification.Notification.Companion.CHANNEL_ID
-import com.dictionary.android.feature_dictionary.notification.Notification.Companion.NOTIFICATION_CHANNEL_DESCRIPTION
-import com.dictionary.android.feature_dictionary.notification.Notification.Companion.NOTIFICATION_CHANNEL_NAME
+import com.dictionary.android.feature_dictionary.notification.NotificationAlarm
+import com.dictionary.android.feature_dictionary.notification.NotificationAlarmReceiver.Companion.CHANNEL_ID
+import com.dictionary.android.feature_dictionary.notification.NotificationAlarmReceiver.Companion.NOTIFICATION_CHANNEL_DESCRIPTION
+import com.dictionary.android.feature_dictionary.notification.NotificationAlarmReceiver.Companion.NOTIFICATION_CHANNEL_NAME
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -24,5 +25,7 @@ class DictionaryApp: Application() {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
+        val alarmManager = NotificationAlarm(this)
+        alarmManager.schedule("CAR")
     }
 }

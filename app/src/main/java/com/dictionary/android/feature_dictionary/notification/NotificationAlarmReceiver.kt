@@ -2,24 +2,29 @@ package com.dictionary.android.feature_dictionary.notification
 
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dictionary.android.MainActivity
 import com.dictionary.android.R
 
-class Notification(
-    private val context: Context
-) {
-    fun sendNotification(description: String) {
+class NotificationAlarmReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val message = intent?.getStringExtra("EXTRA_MESSAGE") ?: return
+        sendNotification(message,context!!)
+    }
+
+   private fun sendNotification(description: String,context: Context) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val pendingIntent: PendingIntent = createPendingIntent(context)
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.baseline_check_circle_outline_24)
             .setContentTitle(NOTIFICATION_TITLE)
             .setContentText(description)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
