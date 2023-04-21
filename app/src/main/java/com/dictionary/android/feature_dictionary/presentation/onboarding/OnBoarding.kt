@@ -1,5 +1,10 @@
 package com.dictionary.android.feature_dictionary.presentation.onboarding
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -10,18 +15,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.dictionary.android.navigation.OnBoardingPage
@@ -38,6 +44,7 @@ fun OnBoarding(
     val items = OnBoardingPage.getData()
     val scope = rememberCoroutineScope()
     val pageState = rememberPagerState()
+    var onClickGetStarted by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -68,12 +75,15 @@ fun OnBoarding(
         )
         BottomSection(modifier = Modifier.weight(1f), pagerState = pageState, onButtonClick = {
             onBoardingViewModel.saveOnBoardingState(completed = true)
+            onClickGetStarted = true
             navController.navigate(Screen.HomeScreen.route) {
                 popUpTo(Screen.OnBoardingScreen.route) {
                     inclusive = true
                 }
             }
         })
+        if (onClickGetStarted) NotificationPermission()
+
     }
 }
 
@@ -193,5 +203,31 @@ fun OnBoardingItem(items: OnBoardingPage) {
             modifier = Modifier.padding(10.dp),
             letterSpacing = 1.sp,
         )
+    }
+}
+
+@Composable
+fun NotificationPermission(){
+    val context = LocalContext.current
+    var hasNotificationPermission by remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mutableStateOf(
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            )
+        } else mutableStateOf(true)
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            hasNotificationPermission = isGranted
+        }
+    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        SideEffect {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 }
