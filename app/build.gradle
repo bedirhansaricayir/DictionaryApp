@@ -32,7 +32,6 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
         useIR = true
     }
     buildFeatures {
@@ -40,7 +39,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.5.21'
+        kotlinCompilerVersion '1.6.10'
     }
     packagingOptions {
         resources {

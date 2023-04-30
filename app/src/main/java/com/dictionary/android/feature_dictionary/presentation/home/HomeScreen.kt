@@ -1,14 +1,12 @@
 package com.dictionary.android.feature_dictionary.presentation.home
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -18,31 +16,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.dictionary.android.core.view.AnimationLoading
 import com.dictionary.android.feature_dictionary.data.local.entity.FavoriteEntity
+import com.dictionary.android.navigation.Screen
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 import java.util.*
 
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: WordInfoViewModel = hiltViewModel(),state: WordInfoState,onFavoriteButtonClicked: () -> Unit,onNotificationButtonClicked: () -> Unit) {
 
-    val viewModel: WordInfoViewModel = hiltViewModel()
-    val state = viewModel.state.value
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val currentDate = LocalDate.now()
-
 
 
     LaunchedEffect(key1 = true) {
@@ -58,57 +53,74 @@ fun HomeScreen() {
         }
     }
 
-    Box(
-        modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .fillMaxSize()
-    ) {
-        Column(
+    Scaffold(
+        topBar = {
+        TopAppBar(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .fillMaxWidth()
+                .height(72.dp),
+            elevation = 5.dp,
+            backgroundColor = MaterialTheme.colors.primary,
         ) {
-            OutlinedTextField(
-                value = viewModel.searchQuery.value,
-                onValueChange = viewModel::onSearch,
-                shape = CircleShape,
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                placeholder = {
-                    Text(text = "Search")
-                },
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        tint = MaterialTheme.colors.secondary,
-                        contentDescription = "Search Button"
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Search,
-                    autoCorrect = true
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
-                    }
-                ),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.secondary,
-                    focusedIndicatorColor = MaterialTheme.colors.primary,
-                    unfocusedIndicatorColor = MaterialTheme.colors.primary,
-                    cursorColor = MaterialTheme.colors.primary,
-                ),
-                maxLines = 45
-
-
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                OutlinedTextField(
+                    value = viewModel.searchQuery.value,
+                    onValueChange = viewModel::onSearch,
+                    shape = RoundedCornerShape(16.dp),
+                    placeholder = {
+                        Text(text = "Search")
+                    },
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            tint = MaterialTheme.colors.secondary,
+                            contentDescription = "Search Button"
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Search,
+                        autoCorrect = true
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                        }
+                    ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.Black,
+                        backgroundColor = MaterialTheme.colors.background,
+                        focusedIndicatorColor = MaterialTheme.colors.primary,
+                        unfocusedIndicatorColor = MaterialTheme.colors.primary,
+                        cursorColor = MaterialTheme.colors.primary,
+                    ),
+                    maxLines = 45)
+                IconButton(onClick = {onFavoriteButtonClicked()}) {
+                    Icon(imageVector = Screen.FavoriteScreen.iconUnfocused, contentDescription = "Favorite Button", tint = MaterialTheme.colors.background)
+                }
+                IconButton(onClick = {onNotificationButtonClicked()}) {
+                    Icon(imageVector = Screen.WordOfTheDayScreen.iconUnfocused, contentDescription = "Notification Button", tint = MaterialTheme.colors.background)
+                }
+            }
+        }
+    }) {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxSize()
+                .padding(it.calculateTopPadding())
+        ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
             ) {
                 items(state.wordInfoItems.size) { i ->
                     val wordInfo = state.wordInfoItems[i]
@@ -126,29 +138,24 @@ fun HomeScreen() {
                     }
 
                     if (i < state.wordInfoItems.size - 1) {
-                        Divider(thickness = 0.5.dp, color = MaterialTheme.colors.onBackground, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+                        Divider(
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                        )
                     }
                 }
             }
-        }
-        if (state.isLoading) {
-            //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), strokeWidth = 1.dp)
-            Box(modifier = Modifier.align(Alignment.Center)){
-                AnimationLoading()
-            }
-        }
-        /*Box(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp, end = 16.dp),Alignment.BottomEnd){
-            FloatingActionButton(onClick = {
-                val favoriteEntity = FavoriteEntity(
-                    word = "deneme",
-                    comment = "Kullanıcı Yorumu",
-                    date = currentDate.toString()
+
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    strokeWidth = 2.dp
                 )
-                viewModel.insertFavorite(favoriteEntity)
-            }) {
-//Eklenebilir.
             }
-        }*/
+        }
+
     }
+
 }
 

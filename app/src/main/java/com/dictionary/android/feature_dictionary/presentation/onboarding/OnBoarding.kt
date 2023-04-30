@@ -29,16 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.dictionary.android.navigation.OnBoardingPage
-import com.dictionary.android.navigation.Screen
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OnBoarding(
-    navController: NavHostController,
+    onGetStartedButtonClick: () -> Unit,
     onBoardingViewModel: OnBoardingViewModel = hiltViewModel()
 ) {
     val items = OnBoardingPage.getData()
@@ -76,11 +74,7 @@ fun OnBoarding(
         BottomSection(modifier = Modifier.weight(1f), pagerState = pageState, onButtonClick = {
             onBoardingViewModel.saveOnBoardingState(completed = true)
             onClickGetStarted = true
-            navController.navigate(Screen.HomeScreen.route) {
-                popUpTo(Screen.OnBoardingScreen.route) {
-                    inclusive = true
-                }
-            }
+            onGetStartedButtonClick()
         })
         if (onClickGetStarted) NotificationPermission()
 

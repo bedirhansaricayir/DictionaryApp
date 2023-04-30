@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import java.util.*
 
 class NotificationAlarm(
@@ -18,7 +19,7 @@ class NotificationAlarm(
         }
 
         val triggerTime = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.HOUR_OF_DAY, 23)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -27,12 +28,13 @@ class NotificationAlarm(
         if (triggerTime.timeInMillis < System.currentTimeMillis()){
             triggerTime.add(Calendar.DAY_OF_YEAR, 1)
         }
+        Toast.makeText(context,"Alarm Scheduled at ${triggerTime.time}",Toast.LENGTH_LONG).show()
         Log.d("NextTriggerTime","Alarm scheduled at ${triggerTime.time}")
 
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             triggerTime.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
+            AlarmManager.INTERVAL_HOUR,
             PendingIntent.getBroadcast(
                 context,
                 0,
