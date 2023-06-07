@@ -32,5 +32,5 @@ The domain layer of the application includes the fundamental and independent com
  * Room -> saving data for local database.
  * Navigation -> Navigating between screens.
  * Coil -> An image loading library for Android backed by Kotlin Coroutines.
- * [Splash API]("https://developer.android.com/develop/ui/views/launch/splash-screen")
- * [Accompanist]("https://github.com/google/accompanist")
+ * [Splash API](https://developer.android.com/develop/ui/views/launch/splash-screen)
+ * [Accompanist](https://github.com/google/accompanist)
