@@ -18,19 +18,19 @@ The domain layer of the application includes the fundamental and independent com
 
 ## Used Libraries and Technologies
 * All developed with kotlin language.
-* Jetpack Compose was used for UI development.
+* [Jetpack Compose](https://developer.android.com/jetpack/compose) was used for UI development.
 * Android Architecture Components
   - A single-activity architecture, using the Navigation to manage composable transactions.
-  - Lifecycle -> perform an action when lifecycle state change.
-  - ViewModel -> Stores UI-related data that isn't destroyed on UI changes.
-  - UseCases -> Located domain layer that sits between the UI layer and the data layer.
-  - Repository -> Located in data layer that contains application data and business logic.
-  - DataStore -> DataStore uses Kotlin coroutines and Flow to store data asynchronously, consistently, and transactionally. 
- * Coroutines + Flow -> for asynchronous data streams.
- * Hilt -> For Dependency Injection.
- * Retrofit2 & OkHttp3 -> construct the REST APIs and paging network data.
- * Room -> saving data for local database.
- * Navigation -> Navigating between screens.
- * Coil -> An image loading library for Android backed by Kotlin Coroutines.
+  - [Lifecycle](https://developer.android.com/topic/libraries/architecture/lifecycle) -> perform an action when lifecycle state change.
+  - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) -> Stores UI-related data that isn't destroyed on UI changes.
+  - [UseCases](https://developer.android.com/topic/architecture/domain-layer) -> Located domain layer that sits between the UI layer and the data layer.
+  - [Repository](https://developer.android.com/topic/architecture/data-layer) -> Located in data layer that contains application data and business logic.
+  - [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) -> DataStore uses Kotlin coroutines and Flow to store data asynchronously, consistently, and transactionally. 
+ * [Coroutines + Flow](https://developer.android.com/kotlin/flow) -> for asynchronous data streams.
+ * [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) -> For Dependency Injection.
+ * [Retrofit2 & OkHttp3](https://square.github.io/retrofit/) -> construct the REST APIs and paging network data.
+ * [Room](https://developer.android.com/jetpack/androidx/releases/room) -> saving data for local database.
+ * [Navigation](https://developer.android.com/jetpack/compose/navigation) -> Navigating between screens.
+ * [Coil](https://coil-kt.github.io/coil/) -> An image loading library for Android backed by Kotlin Coroutines.
  * [Splash API](https://developer.android.com/develop/ui/views/launch/splash-screen)
  * [Accompanist](https://github.com/google/accompanist)
